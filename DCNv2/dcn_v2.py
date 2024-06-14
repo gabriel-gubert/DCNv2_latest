@@ -9,7 +9,7 @@ from torch.autograd import Function
 from torch.autograd.function import once_differentiable
 from torch.nn.modules.utils import _pair
 
-import _ext as _backend
+import DCNv2_C
 
 
 class _DCNv2(Function):
@@ -22,7 +22,7 @@ class _DCNv2(Function):
         ctx.dilation = _pair(dilation)
         ctx.kernel_size = _pair(weight.shape[2:4])
         ctx.deformable_groups = deformable_groups
-        output = _backend.dcn_v2_forward(
+        output = DCNv2_C.dcn_v2_forward(
             input,
             weight,
             bias,
@@ -45,7 +45,7 @@ class _DCNv2(Function):
     @once_differentiable
     def backward(ctx, grad_output):
         input, offset, mask, weight, bias = ctx.saved_tensors
-        grad_input, grad_offset, grad_mask, grad_weight, grad_bias = _backend.dcn_v2_backward(
+        grad_input, grad_offset, grad_mask, grad_weight, grad_bias = DCNv2_C.dcn_v2_backward(
             input,
             weight,
             bias,
@@ -217,7 +217,7 @@ class _DCNv2Pooling(Function):
         ctx.sample_per_part = sample_per_part
         ctx.trans_std = trans_std
 
-        output, output_count = _backend.dcn_v2_psroi_pooling_forward(
+        output, output_count = DCNv2_C.dcn_v2_psroi_pooling_forward(
             input,
             rois,
             offset,
@@ -237,7 +237,7 @@ class _DCNv2Pooling(Function):
     @once_differentiable
     def backward(ctx, grad_output):
         input, rois, offset, output_count = ctx.saved_tensors
-        grad_input, grad_offset = _backend.dcn_v2_psroi_pooling_backward(
+        grad_input, grad_offset = DCNv2_C.dcn_v2_psroi_pooling_backward(
             grad_output,
             input,
             rois,

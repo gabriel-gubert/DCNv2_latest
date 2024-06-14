@@ -8,8 +8,8 @@ import torch
 import torch.nn as nn
 from torch.autograd import gradcheck
 
-from dcn_v2 import dcn_v2_conv, DCNv2, DCN
-from dcn_v2 import dcn_v2_pooling, DCNv2Pooling, DCNPooling
+from DCNv2 import dcn_v2_conv, DCNv2, DCN
+from DCNv2 import dcn_v2_pooling, DCNv2Pooling, DCNPooling
 
 deformable_groups = 1
 N, inC, inH, inW = 2, 2, 4, 4

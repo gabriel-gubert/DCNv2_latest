@@ -42,7 +42,7 @@ def get_extensions():
     include_dirs = [extensions_dir]
     ext_modules = [
         extension(
-            "_ext",
+            "DCNv2_C",
             sources,
             include_dirs=include_dirs,
             define_macros=define_macros,
@@ -57,8 +57,8 @@ setup(
     version="0.1",
     author="charlesshang",
     url="https://github.com/charlesshang/DCNv2",
-    description="deformable convolutional networks",
-    packages=find_packages(exclude=("configs", "tests")),
+    description="Deformable Convolutional Networks",
+    packages=['DCNv2'],
     # install_requires=requirements,
     ext_modules=get_extensions(),
     cmdclass={"build_ext": torch.utils.cpp_extension.BuildExtension},

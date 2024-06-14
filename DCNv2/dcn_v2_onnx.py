@@ -11,7 +11,7 @@ from torch.nn.modules.utils import _pair
 from torch.autograd.function import once_differentiable
 import json
 
-import _ext as _backend
+import DCNv2_C
 
 
 class _DCNv2(Function):
@@ -50,7 +50,7 @@ class _DCNv2(Function):
     #     ctx.dilation = _pair(dilation)
     #     ctx.kernel_size = _pair(weight.shape[2:4])
     #     ctx.deformable_groups = deformable_groups
-        output = _backend.dcn_v2_forward(input, weight, bias,
+        output = DCNv2_C.dcn_v2_forward(input, weight, bias,
                                          offset, mask,
                                          ctx.kernel_size[0], ctx.kernel_size[1],
                                          ctx.stride[0], ctx.stride[1],
@@ -65,7 +65,7 @@ class _DCNv2(Function):
     def backward(ctx, grad_output):
         input, offset, mask, weight, bias = ctx.saved_tensors
         grad_input, grad_offset, grad_mask, grad_weight, grad_bias = \
-            _backend.dcn_v2_backward(input, weight,
+            DCNv2_C.dcn_v2_backward(input, weight,
                                      bias,
                                      offset, mask,
                                      grad_output,
@@ -191,7 +191,7 @@ class _DCNv2Pooling(Function):
         ctx.trans_std = trans_std
 
         output, output_count = \
-            _backend.dcn_v2_psroi_pooling_forward(input, rois, offset,
+            DCNv2_C.dcn_v2_psroi_pooling_forward(input, rois, offset,
                                                   ctx.no_trans, ctx.spatial_scale,
                                                   ctx.output_dim, ctx.group_size,
                                                   ctx.pooled_size, ctx.part_size,
@@ -204,7 +204,7 @@ class _DCNv2Pooling(Function):
     def backward(ctx, grad_output):
         input, rois, offset, output_count = ctx.saved_tensors
         grad_input, grad_offset = \
-            _backend.dcn_v2_psroi_pooling_backward(grad_output,
+            DCNv2_C.dcn_v2_psroi_pooling_backward(grad_output,
                                                    input,
                                                    rois,
                                                    offset,
